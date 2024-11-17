@@ -31,7 +31,7 @@ class KoradSimplePSU(SimplePsu):
     def set_current(self, value:float):
         value = max(0,min(value,self.max_current))
 
-        with self._inst.link as lnk:
+        with self.link as lnk:
             lnk.write(f"ISET1:{value:05.3f}")
 
     def get_current(self) -> float:

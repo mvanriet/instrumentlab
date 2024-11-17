@@ -1,30 +1,33 @@
-'''___         _                          _   _    _ _
-  |_ _|_ _  __| |_ _ _ _  _ _ __  ___ _ _| |_| |  (_) |__   InstrumentLib
-   | || ' \(_-<  _| '_| || | '  \/ -_) ' \  _| |__| | '_ \  instrument/psu/simple_psu.by
-  |___|_||_/__/\__|_|  \_,_|_|_|_\___|_||_\__|____|_|_.__/  (C) 2024  Marc Van Riet et al.
+#  ___         _                          _   _    _ _
+# |_ _|_ _  __| |_ _ _ _  _ _ __  ___ _ _| |_| |  (_) |__   InstrumentLib
+#  | || ' \(_-<  _| '_| || | '  \/ -_) ' \  _| |__| | '_ \  instrument_base.by
+# |___|_||_/__/\__|_|  \_,_|_|_|_\___|_||_\__|____|_|_.__/  (C) 2024  Marc Van Riet et al.
+#
+# Licensed under the Apache License Version 2.0. See http://www.apache.org/licenses/LICENSE-2.0
 
-  Licensed under the Apache License Version 2.0. See http://www.apache.org/licenses/LICENSE-2.0
-'''
 
-from ..instrument_base import InstrumentBase
+from ..instrument import Instrument
+from ..subsystem import SubSystem
+from ..attribute import Attribute
 
-class SimplePsuReadout():
+class SimplePsuReadout(SubSystem):
     ''' Interface class to return actual voltage and current.
     '''
     
-    def __init__(self, inst):
-        self.inst = inst
+    def __init__(self, inst:'SimplePsu'):
+        super().__init__(inst)
+        self._inst = inst
     
-    @property
+    @Attribute
     def voltage(self):
-        return self.inst.read_voltage()
+        return self._inst.read_voltage()
 
-    @property
+    @Attribute
     def current(self):
-        return self.inst.read_current()
+        return self._inst.read_current()
 
 
-class SimplePsu(InstrumentBase):
+class SimplePsu(Instrument):
     ''' Interface class for the basic operations :
         * get and set current and voltage
         * enable/disable output + convenience functions
@@ -36,7 +39,7 @@ class SimplePsu(InstrumentBase):
 
         self.read = SimplePsuReadout(self)
     
-    @property
+    @Attribute
     def enabled(self):
         return self.get_enabled()
 
@@ -52,7 +55,7 @@ class SimplePsu(InstrumentBase):
         ''' Convenience function to disable the output.'''
         self.set_enabled(False)
 
-    @property
+    @Attribute
     def voltage(self):
         return self.get_voltage()
 
@@ -60,7 +63,7 @@ class SimplePsu(InstrumentBase):
     def voltage(self, value):
         self.set_voltage(value)   
     
-    @property
+    @Attribute
     def current(self):
         return self.get_current()
 

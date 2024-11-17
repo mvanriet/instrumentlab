@@ -8,7 +8,6 @@ class LinkBase():
         '''
         '''
         self._inst = instrument
-        self.log = instrument.log
         
         self._lock = threading.Lock()                       # semaphore for access to this link
 

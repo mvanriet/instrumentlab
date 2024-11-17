@@ -1,5 +1,5 @@
 
-import korad
-import velleman
+# import instrumentlab.korad
+# import instrumentlab.velleman
 
 

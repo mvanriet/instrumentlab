@@ -5,7 +5,7 @@ Controlling test instruments like oscilloscopes, power supplies, ...
 
 # License and Copyright
 
-   Copyright 2024  Marc Van Riet e.a.
+   Copyright 2024  Marc Van Riet et al.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use the source code in this repository except in compliance
