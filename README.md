@@ -1,4 +1,4 @@
-# instrumentlib
+# instrumentlab
 Controlling test instruments like oscilloscopes, power supplies, ...
 
 

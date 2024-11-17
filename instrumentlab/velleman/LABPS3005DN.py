@@ -1,12 +1,11 @@
-'''___         _                          _   _    _ _
-  |_ _|_ _  __| |_ _ _ _  _ _ __  ___ _ _| |_| |  (_) |__   InstrumentLib
-   | || ' \(_-<  _| '_| || | '  \/ -_) ' \  _| |__| | '_ \  velleman/LABPS3005DN.by
-  |___|_||_/__/\__|_|  \_,_|_|_|_\___|_||_\__|____|_|_.__/  (C) 2024  Marc Van Riet et al.
+#  ___         _                          _   _         _    
+# |_ _|_ _  __| |_ _ _ _  _ _ __  ___ _ _| |_| |   __ _| |__   InstrumentLab
+#  | || ' \(_-<  _| '_| || | '  \/ -_) ' \  _| |__/ _` | '_ \  
+# |___|_||_/__/\__|_|  \_,_|_|_|_\___|_||_\__|____\__,_|_.__/  (C) 2024  Marc Van Riet et al.
+#
+# Licensed under the Apache License Version 2.0. See http://www.apache.org/licenses/LICENSE-2.0
 
-  Licensed under the Apache License Version 2.0. See http://www.apache.org/licenses/LICENSE-2.0
-'''
-
-from ..base.instrument.psu.simple_psu import SimplePsu
+from ..base.psu.simple_psu import SimplePsu
 from ..korad.korad_slow_serial import KoradSlowSerial
 
 class LABPS3005DN(SimplePsu):
