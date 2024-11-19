@@ -1,5 +1,5 @@
 
-from .LABPS3005D import LABPS3005D
-from .LABPS3005DN import LABPS3005DN
+from .labps3005d import LABPS3005D
+from .labps3005dn import LABPS3005DN
 
 

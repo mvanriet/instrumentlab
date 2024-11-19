@@ -5,7 +5,7 @@
 #
 # Licensed under the Apache License Version 2.0. See http://www.apache.org/licenses/LICENSE-2.0
 
-from ..korad.KAxxxxP import KA3005P
+from ..korad.kaxxxxp import KA3005P
 
 class LABPS3005D(KA3005P):
     ''' LABPS3005D is identical to Korad KA5003.

@@ -9,6 +9,7 @@ import time
 import serial
 
 from ..base.link_base import LinkBase
+from ..base.instrument import Instrument
 
 
 class KoradSlowSerial(LinkBase):
@@ -21,10 +22,10 @@ class KoradSlowSerial(LinkBase):
     WRITE_DELAY_S = 0.055                # minimum time between two writes
     READ_WAIT_S = 0.1                    # minimum time to wait before aborting a read
 
-    def __init__(self, instrument):
+    def __init__(self, instrument:'Instrument', **kwargs):
         ''' Opens connection over serial port.
         '''
-        super().__init__(instrument)
+        super().__init__(instrument, **kwargs)
         
         self.port = None
         self.last_write = time.time()
@@ -35,20 +36,19 @@ class KoradSlowSerial(LinkBase):
         if self.port is not None:                               # skip if port already open
             return
 
-        cfg = self.config
-        if "comport" in cfg:
-            portname = cfg.get("comport")
+        if "comport" in self._config:
+            portname = self._config.get("comport")
         else:
-            raise Exception(f"Comport not found in settings for {self.name}")
+            raise Exception(f"Comport not found in settings for {self._inst._name}")
         
-        baudrate = cfg.getint("baudrate", fallback = 9600)
+        baudrate = self._config.getint("baudrate", fallback = 9600)
 
         self.log.debug(f"Opening COM port {portname} at {baudrate} baud")
 
         try:                                                    # open port with 20ms read timeout
             self.port = serial.Serial(portname, baudrate, timeout=0.02)
         except serial.serialutil.SerialException:
-            self.log.error("Could not open COM port %s", self.portname)
+            self.log.error("Could not open COM port %s", portname)
             self.port = None
 
         return
@@ -62,7 +62,7 @@ class KoradSlowSerial(LinkBase):
         self.port.close()
         self.port = None
 
-    def write(self, data):
+    def write(self, data:str):
         ''' Writes binary data to the port.
             Time is tracked to make sure that two writes are not too fast after one another.
         '''

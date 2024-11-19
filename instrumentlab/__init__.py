@@ -1,5 +1,3 @@
 
-# import instrumentlab.korad
-# import instrumentlab.velleman
 
-
+from .base.config import Config

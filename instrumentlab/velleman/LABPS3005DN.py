@@ -11,7 +11,7 @@ from ..korad.korad_slow_serial import KoradSlowSerial
 class LABPS3005DN(SimplePsu):
     ''' This is based on the interface for the Korad KAxxxx power supplies.
         Unfortunately, the commands are slightly different.
-        The handling of the serial data seems to be the same, so the Korad serial interface should be used
+        The handling of the serial data seems to be the same, so the Korad serial interface can be used
 
         Note that the LABPS3005D is identical to the Korad KA5003, but the 'DN' is not.
     '''
@@ -19,7 +19,7 @@ class LABPS3005DN(SimplePsu):
     def __init__(self, name, **kwargs):
         super().__init__(name, **kwargs)
 
-        self.link = KoradSlowSerial(self)
+        self.link = KoradSlowSerial(self, baudrate=9600)
     
     def set_enabled(self, value:bool):
         with self.link as lnk:
@@ -31,7 +31,7 @@ class LABPS3005DN(SimplePsu):
     def set_current(self, value:float):
         value = max(0,min(value,5))
 
-        with self._inst.link as lnk:
+        with self.link as lnk:
             lnk.write(f"ISET1:{value:05.3f}\\n")
 
     def get_current(self) -> float:

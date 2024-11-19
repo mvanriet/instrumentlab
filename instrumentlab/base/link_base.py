@@ -6,14 +6,18 @@
 # Licensed under the Apache License Version 2.0. See http://www.apache.org/licenses/LICENSE-2.0
 
 import threading
+from .instrument import Instrument
+from .config import Config
 
 class LinkBase():
     
-    def __init__(self, instrument):
+    def __init__(self, instrument : Instrument, **kwargs):
         '''
         '''
         self._inst = instrument
-        
+        self.log = instrument._log                                      # take logger object from instrument
+        self._config = Config.get_config(instrument._name, **kwargs)    # take settings from ini-file and add kwargs
+
         self._lock = threading.Lock()                       # semaphore for access to this link
 
     ######## open and close ###################################################

@@ -8,6 +8,7 @@
 
 import logging
 from .attribute import AttributeProvider
+from .config import Config
 
 class Instrument(AttributeProvider):
     ''' Base class for all instruments
@@ -17,14 +18,13 @@ class Instrument(AttributeProvider):
         super().__init__()
 
         self._name = name
-        self._config = kwargs                       # TODO: make configparser object
+        self._config = Config.get_config(name, **kwargs)              # take settings from ini-file and kwargs
         
         self._log = logging.getLogger("inst.%s" % name)
         self._link = None
 
-    @property
-    def config(self):
-        ''' Returns the section of a ConfigParser with settings for this instrument.
-        '''
-        return self._config
+    # def get_config(self):
+    #     ''' Returns the section of a ConfigParser with settings for this instrument.
+    #     '''
+    #     return self._config
     
