@@ -51,8 +51,6 @@ class KoradSlowSerial(LinkBase):
             self.log.error("Could not open COM port %s", portname)
             self.port = None
 
-        return
-
     def close(self):
         ''' Closes serial thread and connection.
         '''

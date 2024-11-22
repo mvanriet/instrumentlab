@@ -1,0 +1,30 @@
+
+# Info: https://realpython.com/pypi-publish-python-package/ 
+#
+# build: command-line in 'pypi' directory :
+#    python -m build
+#
+# upload to pypi:
+#    twine upload dist/* --repository happyscript
+# Nota: hiervoor is een token gemaakt in .pyirc
+#
+#
+
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "instrumentlab"
+description = "Controlling test instruments like oscilloscopes, power supplies, ..."
+version = "0.0.4"
+readme = "README.md"
+license = { text = "Apache-2.0" }
+requires-python = ">=3.5"
+dependencies = [ ]
+
+[project.urls]
+"Homepage" = "https://github.com/mvanriet/instrumentlab"
+"Documentation" = "https://github.com/mvanriet/instrumentlab/wiki"
+
+
