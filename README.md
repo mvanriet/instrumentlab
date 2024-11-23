@@ -1,7 +1,8 @@
 # instrumentlab
+
 Controlling test instruments like oscilloscopes, power supplies, ...
 
-
+See https://github.com/mvanriet/instrumentlab/wiki for more information.
 
 # License and Copyright
 
