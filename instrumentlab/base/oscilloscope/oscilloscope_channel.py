@@ -18,6 +18,10 @@ class OscilloscopeChannel(SubSystem):
         self._inst = inst
         self._index = index
 
+    @property
+    def _link(self):
+        return self._inst._link
+
     def enable(self):
         self.enabled = True
 

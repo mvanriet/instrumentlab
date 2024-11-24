@@ -41,58 +41,58 @@ class SimplePsu(Instrument):
     
     @Attribute
     def enabled(self):
-        return self.get_enabled()
+        return self._get_enabled()
 
     @enabled.setter
     def enabled(self, value):
-        self.set_enabled(value)   
+        self._set_enabled(value)   
 
     def enable(self):
         ''' Convencience function to enable the output.'''
-        self.set_enabled(True)
+        self._set_enabled(True)
 
     def disable(self):
         ''' Convenience function to disable the output.'''
-        self.set_enabled(False)
+        self._set_enabled(False)
 
     @Attribute
     def voltage(self):
-        return self.get_voltage()
+        return self._get_voltage()
 
     @voltage.setter
     def voltage(self, value):
-        self.set_voltage(value)   
+        self._set_voltage(value)   
     
     @Attribute
     def current(self):
-        return self.get_current()
+        return self._get_current()
 
     @current.setter
     def current(self, value):
-        self.set_current(value)
+        self._set_current(value)
 
     # abstract methods below; to be implemented in derived class
 
-    def set_enabled(self, value:bool):
+    def _set_enabled(self, value:bool):
         raise NotImplementedError()
 
-    def get_enabled(self) -> bool:
+    def _get_enabled(self) -> bool:
         raise NotImplementedError()
     
-    def set_voltage(self, value:float):
+    def _set_voltage(self, value:float):
         raise NotImplementedError()
 
-    def get_voltage(self) -> float:
+    def _get_voltage(self) -> float:
         raise NotImplementedError()
 
-    def read_voltage(self) -> float:
+    def _read_voltage(self) -> float:
         raise NotImplementedError()
 
-    def set_current(self, value:float):
+    def _set_current(self, value:float):
         raise NotImplementedError()
 
-    def get_current(self) -> float:
+    def _get_current(self) -> float:
         raise NotImplementedError()
 
-    def read_current(self) -> float:
+    def _read_current(self) -> float:
         raise NotImplementedError()

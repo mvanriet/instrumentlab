@@ -20,38 +20,37 @@ class KoradSimplePSU(SimplePsu):
         self.max_voltage = max_voltage
         self.max_current = max_current
     
-    def set_enabled(self, value:bool):
+    def _set_enabled(self, value:bool):
         with self.link as lnk:
             lnk.write("OUT1" if value else "OUT0")
 
-    def get_enabled(self) -> bool:
-        raise NotImplementedError()
+    # TODO: implement _get_enabled()
 
-    def set_current(self, value:float):
+    def _set_current(self, value:float):
         value = max(0,min(value,self.max_current))
 
         with self.link as lnk:
             lnk.write(f"ISET1:{value:05.3f}")
 
-    def get_current(self) -> float:
+    def _get_current(self) -> float:
         with self.link as lnk:
             return lnk.query_float("ISET1?")
 
-    def read_current(self) -> float:
+    def _read_current(self) -> float:
         with self.link as lnk:
             return lnk.query_float("IOUT1?") 
 
-    def set_voltage(self, value:float):
+    def _set_voltage(self, value:float):
         value = max(0,min(value,self.max_voltage))
             
         with self.link as lnk:
             lnk.write(f"VSET1{value:05.2f}")
 
-    def get_voltage(self) -> float:
+    def _get_voltage(self) -> float:
         with self.link as lnk:
             return lnk.query_float("VSET1?")
 
-    def read_voltage(self) -> float:
+    def _read_voltage(self) -> float:
         with self.link as lnk:
             return lnk.query_float("VOUT1?")
 
