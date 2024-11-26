@@ -17,7 +17,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "instrumentlab"
 description = "Controlling test instruments like oscilloscopes, power supplies, ..."
-version = "0.0.4"
+version = "0.0.5"
 readme = "README.md"
 license = { text = "Apache-2.0" }
 requires-python = ">=3.5"

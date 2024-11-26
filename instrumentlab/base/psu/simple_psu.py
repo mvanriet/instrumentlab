@@ -20,11 +20,11 @@ class SimplePsuReadout(SubSystem):
     
     @Attribute
     def voltage(self):
-        return self._inst.read_voltage()
+        return self._inst._read_voltage()
 
     @Attribute
     def current(self):
-        return self._inst.read_current()
+        return self._inst._read_current()
 
 
 class SimplePsu(Instrument):

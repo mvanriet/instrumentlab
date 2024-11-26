@@ -49,7 +49,19 @@ class PyVisaLink(LinkBase):
             self._pyvisa_conn.baud_rate = self._config.getint("baudrate")
         if "flowcontrol" in self._config:
             self._pyvisa_conn.flow_control = self._config.getint("flowcontrol")
-
+        if "terminator" in self._config:
+            eol = self._config.get("terminator", "crlf").lower()
+            if eol=="cr":
+                self._pyvisa_conn.read_termination='\r'
+                self._pyvisa_conn.write_termination='\r'
+            elif eol=="lf":
+                self._pyvisa_conn.read_termination='\n'
+                self._pyvisa_conn.write_termination='\n'
+            elif eol=="crlf":
+                self._pyvisa_conn.read_termination='\r\n'
+                self._pyvisa_conn.write_termination='\r\n'
+            else:
+                raise Exception(f"value {eol} for visa_eol is invalid, excpect cr, lf or crlf")
 
     def close(self):
         ''' Closes connection to instrument
