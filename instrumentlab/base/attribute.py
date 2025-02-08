@@ -7,9 +7,9 @@
 
 class Attribute:
     ''' Like a property for a class, but with extra functionality.
-        Intended to be used with classes derived from Instrument_Base
-        Calls the method _cache_value on the object to remember the value that
-        was last read or written.
+        Can only be used on classes that inherit from AttributeProvider.
+        Calls the method _cache_value on the object to remember the value that was last read or written.
+        Also looks for the getter and setter functions in the base classes if not defined in the class itself.
     '''
 
     def __init__(self, fget=None, fset=None, fdel=None, doc=None):
@@ -23,24 +23,60 @@ class Attribute:
     def __set_name__(self, owner, name):
         self.__name__ = name
 
-    def __get__(self, obj, objtype=None):
+    def __get__(self, obj:'AttributeProvider', objtype=None):
+        ''' Calls the getter function for this property.
+
+            If the setter function is not defined in the class, it looks in the base classes.
+            If no setter function is found, a NotImplementedError exception is raised.
+            Note that this is quite exotic, because typically a getter is always defined.
+
+            The value is cached using the _cache_value() method of the AttributeProvider base class.
+        '''
         if obj is None:
             return self
+
         if self.fget is None:
-            raise AttributeError( f'No setter for {type(obj).__name__!r}.{self.__name__!r}' )
+            for cls in type(obj).__bases__:
+                # go over all the members of the class and return the getter function of the property with the same name
+                get_func = next((val.fget for key, val in cls.__dict__.items() if key == self.__name__), None)
+
+                if get_func is not None:            # found a setter function in the base class
+                    self.fget = get_func            # use this function from now on
+                    break
+
+            if self.fget is None:
+                raise NotImplementedError( f'Getter for {type(obj).__name__!r}.{self.__name__!r} not implemented!' )
+
         value = self.fget(obj)
         obj._cache_value(self.__name__, value)
         return value
 
-    def __set__(self, obj, value):
+    def __set__(self, obj:'AttributeProvider', value):
+        ''' Calls the setter function for this property.
+
+            If the setter function is not defined in the class, it looks in the base classes.
+            If no setter function is found, a NotImplementedError exception is raised.
+
+            The value is cached using the _cache_value() method of the AttributeProvider base class.
+        '''
         if self.fset is None:
-            raise AttributeError
-        obj._cache_value(self.__name__, value)
+            for cls in type(obj).__bases__:
+                # go over all the members of the class and return the setter function of the property with the same name
+                set_func = next((val.fset for key, val in cls.__dict__.items() if key == self.__name__), None)
+
+                if set_func is not None:            # found a setter function in the base class
+                    self.fset = set_func            # use this function from now on
+                    break
+
+            if self.fset is None:
+                raise NotImplementedError( f'Setter for {type(obj).__name__!r}.{self.__name__!r} not implemented!' )
+
+        obj._cache_value(self.__name__, value)          # remember the value that was written
         self.fset(obj, value)
 
     def __delete__(self, obj):
         if self.fdel is None:
-            raise AttributeError
+            raise NotImplementedError( f'Deleter for {type(obj).__name__!r}.{self.__name__!r} not implemented!' )
         self.fdel(obj)
 
     def getter(self, fget):
@@ -55,13 +91,13 @@ class Attribute:
 
 class AttributeRef():
     ''' Reference to a property/Attribute of a class.
-        Is returned when using [] on an object with the property name.
+        Is returned when using [] on an AttributeProvider object with the property name.
         Use methods get() and set() to get/set the property value.
-        When used in combination with InstrumentBase, also supports methods peek() and poke()
-        to access values using caching to avoid unnecesasay commands to the instrument.
+        peek() reads the cached value if present, otherwise the actual value is read.
+        poke() writes a value only if it is different from the cached value.
     '''
 
-    def __init__(self, obj:'SubSystem', propname):
+    def __init__(self, obj:'AttributeProvider', propname):
         # if not hasattr(obj, propname):                    # this does a get !!!
         #     raise KeyError(f"Class '{type(obj).__name__}' has no property '{propname}'")
         self.obj = obj
@@ -81,7 +117,9 @@ class AttributeRef():
     
 
 class AttributeProvider():
-    ''' Base class for subsystems of an instrument.
+    ''' Base class for classes that have properties of type Attribute.
+        It provides the caching mechanism and peek() and poke() methods.
+        It implements the [] operator to return an AttributeRef object.
     '''
     def __init__(self):
         self.__attribute_cache = dict()               # for caching Attribute values
