@@ -18,13 +18,9 @@ class SimplePsuReadout(SubSystem):
         super().__init__(inst)
         self._inst = inst
     
-    @Attribute
-    def voltage(self):
-        return self._inst._read_voltage()
-
-    @Attribute
-    def current(self):
-        return self._inst._read_current()
+    
+    voltage = Attribute()
+    current = Attribute()
 
 
 class SimplePsu(Instrument):
@@ -39,60 +35,15 @@ class SimplePsu(Instrument):
 
         self.read = SimplePsuReadout(self)
     
-    @Attribute
-    def enabled(self):
-        return self._get_enabled()
-
-    @enabled.setter
-    def enabled(self, value):
-        self._set_enabled(value)   
+    enabled = Attribute()
 
     def enable(self):
         ''' Convencience function to enable the output.'''
-        self._set_enabled(True)
+        self.enabled = True
 
     def disable(self):
         ''' Convenience function to disable the output.'''
-        self._set_enabled(False)
+        self.enabled = False
 
-    @Attribute
-    def voltage(self):
-        return self._get_voltage()
-
-    @voltage.setter
-    def voltage(self, value):
-        self._set_voltage(value)   
-    
-    @Attribute
-    def current(self):
-        return self._get_current()
-
-    @current.setter
-    def current(self, value):
-        self._set_current(value)
-
-    # abstract methods below; to be implemented in derived class
-
-    def _set_enabled(self, value:bool):
-        raise NotImplementedError()
-
-    def _get_enabled(self) -> bool:
-        raise NotImplementedError()
-    
-    def _set_voltage(self, value:float):
-        raise NotImplementedError()
-
-    def _get_voltage(self) -> float:
-        raise NotImplementedError()
-
-    def _read_voltage(self) -> float:
-        raise NotImplementedError()
-
-    def _set_current(self, value:float):
-        raise NotImplementedError()
-
-    def _get_current(self) -> float:
-        raise NotImplementedError()
-
-    def _read_current(self) -> float:
-        raise NotImplementedError()
+    voltage = Attribute()
+    current = Attribute()

@@ -5,8 +5,26 @@
 #
 # Licensed under the Apache License Version 2.0. See http://www.apache.org/licenses/LICENSE-2.0
 
-from ..base.psu.simple_psu import SimplePsu
+from ..base.psu.simple_psu import SimplePsu, SimplePsuReadout
+from ..base.attribute import Attribute
 from .korad_slow_serial import KoradSlowSerial
+
+class KoradSimpleReadout(SimplePsuReadout):
+    ''' Interface class to return actual voltage and current.
+    '''
+    def __init__(self, inst:'KoradSimplePSU'):
+        super().__init__(inst)
+
+    @Attribute
+    def voltage(self):
+        with self._inst.link as lnk:
+            return lnk.query_float("VOUT1?")
+
+    @Attribute
+    def current(self):
+        with self._inst.link as lnk:
+            return lnk.query_float("IOUT1?") 
+    
 
 class KoradSimplePSU(SimplePsu):
     ''' Base class to derive instruments from with a given voltage/current range.
@@ -15,44 +33,44 @@ class KoradSimplePSU(SimplePsu):
     def __init__(self, name, max_voltage, max_current, **kwargs):
         super().__init__(name, **kwargs)
 
-        self.link = KoradSlowSerial(self)
-
         self.max_voltage = max_voltage
         self.max_current = max_current
+
+        self.link = KoradSlowSerial(self)
+        self.read = KoradSimpleReadout(self)
+
+    @Attribute
+    def enabled(self):
+        return super().enabled                  # @TODO: implement getter
     
-    def _set_enabled(self, value:bool):
+    @enabled.setter
+    def enabled(self, value):
         with self.link as lnk:
-            lnk.write("OUT1" if value else "OUT0")
+            lnk.write("OUT1" if value else "OUT0")        
 
-    # TODO: implement _get_enabled()
-
-    def _set_current(self, value:float):
+    @Attribute
+    def current(self):
+        with self.link as lnk:
+            return lnk.query_float("ISET1?")
+        
+    @current.setter
+    def current(self, value):
         value = max(0,min(value,self.max_current))
 
         with self.link as lnk:
             lnk.write(f"ISET1:{value:05.3f}")
 
-    def _get_current(self) -> float:
-        with self.link as lnk:
-            return lnk.query_float("ISET1?")
-
-    def _read_current(self) -> float:
-        with self.link as lnk:
-            return lnk.query_float("IOUT1?") 
-
-    def _set_voltage(self, value:float):
-        value = max(0,min(value,self.max_voltage))
-            
-        with self.link as lnk:
-            lnk.write(f"VSET1{value:05.2f}")
-
-    def _get_voltage(self) -> float:
+    @Attribute
+    def voltage(self):
         with self.link as lnk:
             return lnk.query_float("VSET1?")
+        
+    @voltage.setter
+    def voltage(self, value):
+        value = max(0,min(value,self.max_voltage))
 
-    def _read_voltage(self) -> float:
         with self.link as lnk:
-            return lnk.query_float("VOUT1?")
+            lnk.write(f"VSET1:{value:05.3f}")
 
 
 class KA3005P(KoradSimplePSU):

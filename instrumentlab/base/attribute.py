@@ -37,11 +37,8 @@ class Attribute:
 
         if self.fget is None:
             for cls in type(obj).__bases__:
-                # go over all the members of the class and return the getter function of the property with the same name
-                get_func = next((val.fget for key, val in cls.__dict__.items() if key == self.__name__), None)
-
-                if get_func is not None:            # found a setter function in the base class
-                    self.fget = get_func            # use this function from now on
+                if self.__name__ in cls.__dict__ and isinstance(cls.__dict__[self.__name__], Attribute):
+                    self.fget = cls.__dict__[self.__name__].fget
                     break
 
             if self.fget is None:
@@ -61,11 +58,8 @@ class Attribute:
         '''
         if self.fset is None:
             for cls in type(obj).__bases__:
-                # go over all the members of the class and return the setter function of the property with the same name
-                set_func = next((val.fset for key, val in cls.__dict__.items() if key == self.__name__), None)
-
-                if set_func is not None:            # found a setter function in the base class
-                    self.fset = set_func            # use this function from now on
+                if self.__name__ in cls.__dict__ and isinstance(cls.__dict__[self.__name__], Attribute):
+                    self.fset = cls.__dict__[self.__name__].fset
                     break
 
             if self.fset is None:
@@ -125,6 +119,8 @@ class AttributeProvider():
         self.__attribute_cache = dict()               # for caching Attribute values
 
     def __getitem__(self, propname):
+        if not propname in self.__attribute_cache:
+            raise AttributeError(f"Attribute '{propname}' not found.")
         return AttributeRef(self, propname)
 
     def _cache_value(self, name, value):
