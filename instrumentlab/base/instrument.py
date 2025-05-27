@@ -23,6 +23,12 @@ class Instrument(AttributeProvider):
         self._log = logging.getLogger("inst.%s" % name)
         self._link = None
 
+    @property
+    def link(self):
+        ''' The link to the instrument.
+        '''
+        return self._link
+
     # def get_config(self):
     #     ''' Returns the section of a ConfigParser with settings for this instrument.
     #     '''
